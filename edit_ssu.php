@@ -1,7 +1,6 @@
 <?php
 		session_start();
 		if(!isset($_SESSION)){
-			var_dump($_SESSION);
 			header('location:logout.php');
 			exit();
 		}
@@ -38,7 +37,7 @@
 			<a href="userdashboard.php">>>Back</a>
 		</div>
 
-	<form id="AddSSU" method="POST">
+	<form id="EditSSU" method="POST">
 		<input type="hidden" name="operation" value="edit_map" />
     <input type="hidden" name="map_id" value="<?php echo $id ?>" />
   			<div class="form-group">
@@ -97,7 +96,7 @@ $(document).ready(function(){
 
 var ssu_info = null;
 
-$("#AddSSU").validate({
+$("#EditSSU").validate({
 				rules:{
 						state:"required",
 						region:"required",
@@ -117,7 +116,7 @@ $("#AddSSU").validate({
 
 		$("#btnSubmit").click(function(){
 				if($("#AddSSU").valid()){
-					var postdata = $("#AddSSU").serialize();
+					var postdata = $("#EditSSU").serialize();
 					$.ajax({
 						url:'controller/MapController.php',
 						data:postdata,

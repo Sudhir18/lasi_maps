@@ -8,8 +8,7 @@
 	.msg-box{
 		display: none;
 	}
-
-</style>	
+</style>
 <div class="container">
 
 	<div class="msg-box error-box alert alert-danger alert-dismissable fade in">
@@ -26,7 +25,7 @@
 		<a href="index.php">>>Go TO Login</a>
 </div>
 <form id="AddUserForm" method="POST">
-	<input type="hidden" name="operation" value="add_user" />	
+	<input type="hidden" name="operation" value="add_user" />
   <div class="form-group">
     <label for="email">Username:</label>
     <input type="text" class="form-control" id="username" name="username">
@@ -38,19 +37,19 @@
  <div class="form-group">
     <label for="pwd">Confirm Password:</label>
     <input type="password" class="form-control" id="cnf_password" name="cnf_password">
-  </div> 
+  </div>
   <button type="button" id="btnSubmit" class="btn btn-info">Add</button>
 </form>
 </div>
 <script type="text/javascript">
-	
+
 	$(document).ready(function(){
 
 		$("#AddUserForm").validate({
 				rules:{
 						username:"required",
 						password:"required",
-						cnf_password:{required:true,equalTo:'#password'}	
+						cnf_password:{required:true,equalTo:'#password'}
 				},
 				messages:{
 					username:"required",
@@ -90,7 +89,7 @@
 
 </script>
 
-<?php 
-	
+<?php
+
 	include_once(dirname(__FILE__).'/view/footer.php');
 ?>

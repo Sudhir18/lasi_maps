@@ -1,7 +1,6 @@
 <?php
 		session_start();
 		if(!isset($_SESSION)){
-			var_dump($_SESSION);
 			header('location:logout.php');
 			exit();
 		}
@@ -27,7 +26,7 @@
 	</table>
 </div>
 <script type="text/javascript">
-	
+
 $(document).ready(function(){
     $('#listMap').DataTable({
     	"ajax":"controller/getAllMaps.php",
@@ -38,7 +37,7 @@ $(document).ready(function(){
 					{"data":"id","width":"10%",
 					 "render": function(data,type,row,meta){
 					 			return '';
-					 	}	
+					 	}
 					}
 				]
 
@@ -46,7 +45,7 @@ $(document).ready(function(){
 });
 
 </script>
-<?php 
-	
+<?php
+
 	include_once(dirname(__FILE__).'/view/footer.php');
 ?>
