@@ -28,9 +28,9 @@ switch($operation){
 					  $result = UserModel::addUser($data);
 
 					  if($result === false){
-						logAndExit('error','Failed to add user');					  	
+						logAndExit('error','Failed to add user');
 					  }
-					  
+
 					  logAndExit('success','User added successfully!');
 					  break;
 
@@ -88,7 +88,7 @@ function authenticateUser($data){
 	$loginResult = UserModel::validateLogin($data);
 
 	if($loginResult === false){
-	logAndExit('error','Invalid username and password!');	
+	logAndExit('error','Invalid username and password!');
 	}
 
 	$_SESSION['SESS_USERNAME'] = $loginResult['username'];
@@ -97,7 +97,6 @@ function authenticateUser($data){
 	$logger->log('log','Session data'.print_r($_SESSION,1));
 	logAndExit('success','Authenticated successfully!');
 }
-
 
 function resetPassword($data){
 
@@ -113,7 +112,7 @@ function resetPassword($data){
 		logAndExit('error','Confirm password required!');
 	}
 
-	
+
 	if($data['password'] != $data['cnf_password']){
 		logAndExit('error','Confirm password not matching!');
 	}
