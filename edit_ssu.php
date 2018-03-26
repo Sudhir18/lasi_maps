@@ -15,7 +15,8 @@
     $ssu_map = MapModel::getMapBySSU($id);
     $ssu = MapModel::getSSUById($id);
 		$states = MapModel::getStates();
-    
+    $districts = MapModel::getDistricts($ssu['stateid'],$ssu['urbanrural']);
+    $ssu_in_district = MapModel::getSSUByDistrict($ssu['regionid']);
 ?>
 <style>
 	.msg-box{
@@ -38,13 +39,16 @@
 		</div>
 
 	<form id="AddSSU" method="POST">
-		<input type="hidden" name="operation" value="<?php echo $_GET['action'] ?>" />
+		<input type="hidden" name="operation" value="edit_map" />
+    <input type="hidden" name="map_id" value="<?php echo $id ?>" />
   			<div class="form-group">
     			<label for="state">State:</label>
     			<select id="state" class="form-control" name="state">
     				<option value="">--Select State--</option>
     				<?php foreach ($states as $state) {?>
-    				<option value="<?php echo $state['stateid']?>"><?php echo $state['state']?></option>
+    				<option value="<?php echo $state['stateid']?>" <?php echo $state['stateid'] == $ssu['stateid'] ? 'selected': ''?>>
+              <?php echo $state['state']?>
+            </option>
     				<?php } ?>
     			</select>
   			</div>
@@ -52,20 +56,30 @@
     			<label for="region">Region:</label>
     			<select id="region" class="form-control" name="region">
     				<option value="">--Select Region--</option>
-    				<option value="1">Urban</option>
-    				<option value="2">Rural</option>
+    				<option value="1" <?php echo $ssu['urbanrural'] == 1 ? 'selected':'' ?>>Urban</option>
+    				<option value="2" <?php echo $ssu['urbanrural'] == 2 ? 'selected':'' ?>>Rural</option>
     			</select>
   			</div>
 
  			<div class="form-group">
     			<label for="district">District:</label>
-    			<select id="district" class="form-control" name="district">
+          <select id="district" class="form-control" name="district">
+          <?php foreach($districts as $district){?>
+    			       <option value="<?php echo $district['regionid'] ?>" <?php echo $district['regionid'] == $ssu['regionid'] ? 'selected':''?>>
+                   <?php echo $district['region']?>
+                 </option>
+          <?php } ?>
     			</select>
   			</div>
 
   			<div class="form-group">
     			<label for="ssu">SSU:</label>
     			<select id="ssu" class="form-control" name="ssu">
+              <?php foreach($ssu_in_district as sd) {?>
+                <option value="<?php echo $sd['puid']?>" <?php echo $sd['puid'] == $ssu['puid'] ? 'selected' : ''?>>
+                    <?php echo $sd['name'] ?>
+                </option>
+              <?php }?>
     			</select>
   			</div>
 

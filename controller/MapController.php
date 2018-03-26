@@ -43,14 +43,12 @@ switch($operation){
 									$data['urbanrural'] =  trim($_POST['region']);
 									$data['regionid'] =  trim($_POST['district']);
 									$data['ssuid'] =  trim($_POST['ssu']);
-									$filename = 'ssu_map_'.$data['ssuid'].'.png';
-									$data['filename'] = $filename;
-									if(validateAddSSU($data)){
+									if(validateAddSSUInput($data)){
 										//
 										 	$data['user_id'] = $_SESSION['SESS_USERID'];
 											if(MapModel::addMap($data)){
 													$map_info = MapModel::getMapBySSU($data['ssuid']);
-
+													$filename = 'ssu_map_'.$map_info['id'].'.png';
 													$targetDir = dirname(dirname(__FILE__)).'/map_images/';
 													$targetFileName = $targetDir.$filename;
 													if(file_exists($targetFileName)){
@@ -58,18 +56,49 @@ switch($operation){
 													}
 
 													if(move_uploaded_file($_FILES["ssu_file"]["tmp_name"], $targetFileName)){
-														MapModel::updateFilepath($targetFileName,$map_info[id]);
+														MapModel::updateFilepath($targetFileName,$filename,$map_info[id]);
 														logAndExit('success','SSU Map uploaded successfully');
 													}else{
 														logAndExit('error','Failed to upload image');
 													}
 
 											}
+											logAndExit('error','Failed to add ssu');
 									}
+									break;
+
+	case 'edit_ssu' : $data = array();
+										$data['id'] = trim($_POST['id']);
+										$data['ssuid'] = trim($_POST['ssu']);
+										$data['stateid'] = trim($_POST['state']);
+										$data['regionid'] = trim($_POST['region']);
+									//	$data['uploaded_by'] = $_SESSION['SESS_USERID'];
+										if(validateEditSSUInput($data)){
+											$map_info = MapModel::getMapById($data['id']);
+											MapModel::updateMap($data,$data['id']);
+
+											if(isset($_FILES['ssu_file'])){
+												//delete previous filepath & update filepath
+												$filename = 'ssu_map_'.$map_info['id'].'.png';
+												$targetDir = dirname(dirname(__FILE__)).'/map_images/';
+												$targetFileName = $targetDir.$filename;
+												if(file_exists($targetFileName)){
+													unlink($targetFileName);
+													if(move_uploaded_file($_FILES["ssu_file"]["tmp_name"], $targetFileName)){
+														logAndExit('success','SSU Map updated successfully');
+													}else{
+														logAndExit('success','Failed to upload file');
+													}
+												}
+											}
+											logAndExit('success','SSU Map updated successfully');
+										}
+										break;
+
+
 }
 
-
-function validateAddSSU($data){
+function validateAddSSUInput($data){
 		if(empty($data['ssuid']) || !is_integer($data['ssuid'])){
 			logAndExit('error','Invalid SSU');
 		}
@@ -89,6 +118,25 @@ function validateAddSSU($data){
 		}
 
 		return true;
+}
+
+function validateEditSSUInput($data){
+	if(empty($data['ssuid']) || !is_integer($data['ssuid'])){
+		logAndExit('error','Invalid SSU');
+	}
+
+	if(isset($_FILES['ssu_file'])){
+		$extension = pathinfo($_FILES['ssu_file']['name'],PATHINFO_EXTENSION);
+		if(!in_array($extension,array("jpg","jpeg","png","gif"))){
+			logAndExit('error','Invalid extension');
+		}
+	}
+
+	$map_info = MapModel::getMapById($data['id']);
+	if(!$map_info){
+		logAndExit('error','no map found');
+	}
+	return true;
 }
 
 

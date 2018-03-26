@@ -28,20 +28,20 @@
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 			<span class="success-msg"></span>
 		</div>
-	
+
 		<div class="row text-right">
 			<a href="userdashboard.php">>>Back</a>
 		</div>
 
 	<form id="AddSSU" method="POST">
-		<input type="hidden" name="operation" value="<?php echo $_GET['action'] ?>" />	
+		<input type="hidden" name="operation" value="<?php echo $_GET['action'] ?>" />
   			<div class="form-group">
     			<label for="state">State:</label>
     			<select id="state" class="form-control" name="state">
     				<option value="">--Select State--</option>
     				<?php foreach ($states as $state) {?>
-    				<option value="<?php echo $state['stateid']?>"><?php echo $state['state']?></option>			
-    				<?php } ?>	
+    				<option value="<?php echo $state['stateid']?>"><?php echo $state['state']?></option>
+    				<?php } ?>
     			</select>
   			</div>
 			<div class="form-group">
@@ -140,7 +140,7 @@ $("#AddSSU").validate({
     function getDistricts(){
     	var stateid = $("#state option:selected").val();
     	var urbanrural = $("#region option:selected").val();
-    	
+
 		$.ajax({
 			url:'controller/MapController.php',
 			data:{operation:'get_districts',stateid:stateid,urbanrural:urbanrural},
@@ -151,14 +151,14 @@ $("#AddSSU").validate({
 					if(data.status =="success"){
 						districts = data.districts;
 						for(let i=0;i<districts.length;i++){
-							dataHTML += "<option value='"+districts[i].regionid+"'>"+districts[i].region+"</option>";	
+							dataHTML += "<option value='"+districts[i].regionid+"'>"+districts[i].region+"</option>";
 						}
 						if(dataHTML !=""){
 							dataHTML = "<option value=''>--Select District--</option>"+dataHTML;
-						}	
-				    	$("#district").html(dataHTML);							
+						}
+				    	$("#district").html(dataHTML);
 					}else{
-						alert(data.message);						
+						alert(data.message);
 					}
 
 			},
@@ -183,14 +183,14 @@ $("#AddSSU").validate({
 					if(data.status =="success"){
 						ssu = data.ssu;
 						for(let i=0;i<ssu.length;i++){
-							dataHTML += "<option value='"+ssu[i].puid+"'>"+ssu[i].name+"</option>";	
+							dataHTML += "<option value='"+ssu[i].puid+"'>"+ssu[i].name+"</option>";
 						}
 						if(dataHTML !=""){
 							dataHTML = "<option value=''>--Select SSU--</option>"+dataHTML;
-						}	
-				    	$("#ssu").html(dataHTML);							
+						}
+				    	$("#ssu").html(dataHTML);
 					}else{
-						alert(data.message);						
+						alert(data.message);
 					}
 
 			},
@@ -202,7 +202,7 @@ $("#AddSSU").validate({
 });
 
 </script>
-<?php 
-	
+<?php
+
 	include_once(dirname(__FILE__).'/view/footer.php');
 ?>

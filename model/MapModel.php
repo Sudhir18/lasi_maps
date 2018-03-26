@@ -46,8 +46,8 @@ class MapModel{
 
 	public static function addMap($data){
 		global $db;
-		$sql = "INSERT INTO sms_ssu_maps(ssuid,filename,uploaded_by) VALUES(?,?,?)";
-		$result = $db->execute($sql,array($data['ssuid'],$data['filename'],$data['uploaded_by']));
+		$sql = "INSERT INTO sms_ssu_maps(ssuid,uploaded_by) VALUES(?,?)";
+		$result = $db->execute($sql,array($data['ssuid'],$data['uploaded_by']));
 		if($result !== false){
 			return true;
 		}
@@ -62,10 +62,10 @@ class MapModel{
 		return $map;
 	}
 
-	public function updateFilepath($filepath,$id){
+	public function updateFilepath($filepath,$filename,$id){
 		global $db;
-		$sql = "UPDATE sms_ssu_maps SET filepath=? WHERE id=?";
-		$reuslt = $db->execute($sql,array($filepath,$ssuid));
+		$sql = "UPDATE sms_ssu_maps SET filepath=?,filename=? WHERE id=?";
+		$reuslt = $db->execute($sql,array($filepath,$filename,$ssuid));
 		if($result !== false)
 			return true;
 		return false;
@@ -74,9 +74,27 @@ class MapModel{
 	public static function getSSUById($id){
 		global $db;
 		$sql = "SELECT * FROM lasi_psus WHERE puid = ?";
-		$db->executes($sql,array($id));
+		$db->execute($sql,array($id));
 		$ssu = $db->get_record();
 		return $ssu;
+	}
+
+	public static function getMapById($id){
+		global $db;
+		$sql = "SELECT * FROM sms_ssu_maps WHERE id = ? ";
+		$db->execute($sql,array($id));
+		$map = $db->get_record();
+		return $map;
+	}
+
+	public static function updateMap($data,$id){
+		global $db;
+		$sql = "UPDATE sms_ssu_maps SET ssuid=? WHERE id = ? ";
+		$result = $db->execute($sql,array($data['ssuid'],$id));
+		if($result !== false)
+			return true;
+
+		return false;
 	}
 }
 
