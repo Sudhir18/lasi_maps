@@ -33,7 +33,7 @@
 		</div>
 
 	<form id="AddSSU" method="POST">
-		<input type="hidden" name="operation" value="<?php echo $_GET['action'] ?>" />
+		<input type="hidden" name="operation" value="add_ssu" />
   			<div class="form-group">
     			<label for="state">State:</label>
     			<select id="state" class="form-control" name="state">
@@ -98,10 +98,15 @@ $("#AddSSU").validate({
 
 		$("#btnSubmit").click(function(){
 				if($("#AddSSU").valid()){
-					var postdata = $("#AddSSU").serialize();
+//					var postdata = $("#AddSSU").serialize();
+//					var formData = new FormData($("#AddSSU"));
 					$.ajax({
 						url:'controller/MapController.php',
-						data:postdata,
+						data:new FormData($("#AddSSU")[0]),
+						cache : false,
+						//dataType    : 'json',
+						contentType: false,
+						processData : false,
 						method:'POST',
 						success:function(data){
 							var response = $.parseJSON(data);

@@ -45,7 +45,7 @@ switch($operation){
 									$data['ssuid'] =  trim($_POST['ssu']);
 									if(validateAddSSUInput($data)){
 										//
-										 	$data['user_id'] = $_SESSION['SESS_USERID'];
+										 	$data['uploaded_by'] = $_SESSION['SESS_USERID'];
 											if(MapModel::addMap($data)){
 													$map_info = MapModel::getMapBySSU($data['ssuid']);
 													$filename = 'ssu_map_'.$map_info['id'].'.png';
@@ -54,7 +54,7 @@ switch($operation){
 													if(file_exists($targetFileName)){
 														unlink($targetFileName);
 													}
-
+													die($targetFileName);
 													if(move_uploaded_file($_FILES["ssu_file"]["tmp_name"], $targetFileName)){
 														MapModel::updateFilepath($targetFileName,$filename,$map_info[id]);
 														logAndExit('success','SSU Map uploaded successfully');
@@ -99,10 +99,11 @@ switch($operation){
 }
 
 function validateAddSSUInput($data){
-		if(empty($data['ssuid']) || !is_integer($data['ssuid'])){
+		if(empty($data['ssuid']) || !is_numeric($data['ssuid'])){
 			logAndExit('error','Invalid SSU');
 		}
 
+//		var_dump($_FILES);
 		if(!isset($_FILES['ssu_file']) || !($_FILES['ssu_file']['size'] > 0)){
 			logAndExit('error','File not selected');
 		}
@@ -121,7 +122,7 @@ function validateAddSSUInput($data){
 }
 
 function validateEditSSUInput($data){
-	if(empty($data['ssuid']) || !is_integer($data['ssuid'])){
+	if(empty($data['ssuid']) || !is_numeric($data['ssuid'])){
 		logAndExit('error','Invalid SSU');
 	}
 
