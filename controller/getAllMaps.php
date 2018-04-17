@@ -1,32 +1,25 @@
 <?php
 
 include_once(dirname(dirname(__FILE__)).'/model/MapModel.php');
-/*
+include_once(dirname(dirname(__FILE__)).'/config/config.php');
+
 $maps = MapModel::getAllMaps();
+//die(print_r($maps,1));
 $data_arr = array();
 if($maps){
 	foreach ($maps as $map) {
 		# code...
 		$itm = array();
 		$itm['id'] = $map['id'];
-		$itm['ssu'] = $map['ssu'];
-		$itm['district'] = $map['district'];
-		$itm['state'] = $map['id'];
+		$itm['ssu'] = $map['name'];
+		$itm['ssuid'] = $map['ssuid'];
+		$itm['district'] = $map['region'];
+		$itm['state'] = $map['state'];
 		$itm['filename'] = $map['filename'];
-		$itm['filepath'] = $map['filepath'];
+		$itm['filepath'] = UPLOAD_IMAGE_URL.'/'.$map['id'].'/'.$map['filename'];
 		array_push($data_arr, $itm);
 	}
 }
-*/
-
-$data_arr = array(
-		array('id' => 1 ,'ssu' => 'keg' , 'district' => 'pune', 'state'=> 'maharastra'),
-		array('id' => 2 ,'ssu' => 'meg' , 'district' => 'beed', 'state'=> 'maharastra'),
-		array('id' => 3 ,'ssu' => 'jampur' , 'district' => 'lucknow', 'state'=> 'up'),
-		array('id' => 4 ,'ssu' => 'mli' , 'district' => 'patna', 'state'=> 'bihar'),
-		array('id' => 5 ,'ssu' => 'truni' , 'district' => 'madhurai', 'state'=> 'tamilnadu'),
-
-);
 echo json_encode(array('data' => $data_arr));
 exit();
 ?>

@@ -8,6 +8,7 @@ include_once(dirname(dirname(__FILE__)).'/config/logger.php');
 include_once(dirname(dirname(__FILE__)).'/model/UserModel.php');
 include_once(dirname(dirname(__FILE__)).'/model/MapModel.php');
 include_once(dirname(dirname(__FILE__)).'/config/functions.php');
+include_once(dirname(dirname(__FILE__)).'/config/config.php');
 
 $logger->log("log","POST data".print_r($_POST,1));
 
@@ -48,17 +49,24 @@ switch($operation){
 										 	$data['uploaded_by'] = $_SESSION['SESS_USERID'];
 											if(MapModel::addMap($data)){
 													$map_info = MapModel::getMapBySSU($data['ssuid']);
-													$filename = 'ssu_map_'.$map_info['id'].'.png';
-													$targetDir = dirname(dirname(__FILE__)).'/map_images/';
+													$filename = basename($_FILES['ssu_file']['name']);
+													$targetDir = APPPATH.'\map_images\\'.$map_info['id'].'\\';
 													$targetFileName = $targetDir.$filename;
 													if(file_exists($targetFileName)){
 														unlink($targetFileName);
 													}
-													die($targetFileName);
+													
+													mkdir($targetDir,0775,true);
+													
+													//die($targetFileName);
+												//	mkdir($targetDir);
 													if(move_uploaded_file($_FILES["ssu_file"]["tmp_name"], $targetFileName)){
-														MapModel::updateFilepath($targetFileName,$filename,$map_info[id]);
+														MapModel::updateFilepath($targetFileName,$filename,$map_info['id']);
 														logAndExit('success','SSU Map uploaded successfully');
 													}else{
+															if(file_exists($targetFileName)){
+														unlink($targetFileName);
+													}
 														logAndExit('error','Failed to upload image');
 													}
 
@@ -68,28 +76,34 @@ switch($operation){
 									break;
 
 	case 'edit_ssu' : $data = array();
-										$data['id'] = trim($_POST['id']);
+										$data['id'] = trim($_POST['map_id']);
 										$data['ssuid'] = trim($_POST['ssu']);
 										$data['stateid'] = trim($_POST['state']);
 										$data['regionid'] = trim($_POST['region']);
 									//	$data['uploaded_by'] = $_SESSION['SESS_USERID'];
+
 										if(validateEditSSUInput($data)){
 											$map_info = MapModel::getMapById($data['id']);
 											MapModel::updateMap($data,$data['id']);
 
-											if(isset($_FILES['ssu_file'])){
+											if(isset($_FILES['ssu_file']['name'])){
 												//delete previous filepath & update filepath
-												$filename = 'ssu_map_'.$map_info['id'].'.png';
-												$targetDir = dirname(dirname(__FILE__)).'/map_images/';
+												$filename = basename($_FILES['ssu_file']['name']);
+												$targetDir = APPPATH.'\map_images\\'.$map_info['id'].'\\';
 												$targetFileName = $targetDir.$filename;
-												if(file_exists($targetFileName)){
-													unlink($targetFileName);
+												if(file_exists($map_info['filepath'])){
+													unlink($map_info['filepath']);
+												}
+
+												mkdir($targetDir,0775,true);
+												
 													if(move_uploaded_file($_FILES["ssu_file"]["tmp_name"], $targetFileName)){
+														MapModel::updateFilepath($targetFileName,$filename,$map_info['id']);
 														logAndExit('success','SSU Map updated successfully');
 													}else{
 														logAndExit('success','Failed to upload file');
 													}
-												}
+												
 											}
 											logAndExit('success','SSU Map updated successfully');
 										}

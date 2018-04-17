@@ -32,7 +32,7 @@
 			<a href="userdashboard.php">>>Back</a>
 		</div>
 
-	<form id="AddSSU" method="POST">
+	<form id="AddSSU" method="POST" enctype="multipart/form-data">
 		<input type="hidden" name="operation" value="add_ssu" />
   			<div class="form-group">
     			<label for="state">State:</label>

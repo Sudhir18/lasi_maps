@@ -36,7 +36,7 @@ class MapModel{
 		return $districts;
 	}
 
-	public function getSSUByDistrict($regionid){
+	public static function getSSUByDistrict($regionid){
 		global $db;
 		$sql = "SELECT distinct puid,name FROM lasi_psus WHERE regionid = ?  ORDER BY name";
 		$db->execute($sql,array($regionid));
@@ -62,10 +62,10 @@ class MapModel{
 		return $map;
 	}
 
-	public function updateFilepath($filepath,$filename,$id){
+	public static function updateFilepath($filepath,$filename,$id){
 		global $db;
 		$sql = "UPDATE sms_ssu_maps SET filepath=?,filename=? WHERE id=?";
-		$reuslt = $db->execute($sql,array($filepath,$filename,$ssuid));
+		$reuslt = $db->execute($sql,array($filepath,$filename,$id));
 		if($result !== false)
 			return true;
 		return false;

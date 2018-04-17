@@ -1,19 +1,20 @@
 <?php
-		session_start();
-		if(!isset($_SESSION)){
-			header('location:logout.php');
+	
+	session_start();
+	if(!isset($_SESSION)){
+		header('location:index.php');
 			exit();
-		}
+	}
 
-		include_once(dirname(__FILE__).'/model/MapModel.php');
-		include_once(dirname(__FILE__).'/config/config.php');
-		include_once(dirname(__FILE__).'/view/header.php');
-		include_once(dirname(__FILE__).'/view/usernavbar.php');
+	include_once(dirname(__FILE__).'/model/MapModel.php');
+	include_once(dirname(__FILE__).'/config/config.php');
+	include_once(dirname(__FILE__).'/view/header.php');
+	include_once(dirname(__FILE__).'/view/usernavbar.php');
 		// all states and ssu_info
-    $id = trim($_GET['ssu']);
-    $ssu_map = MapModel::getMapBySSU($id);
-    $ssu = MapModel::getSSUById($id);
-		$states = MapModel::getStates();
+    $id = trim($_GET['mapid']);
+    $ssu_map = MapModel::getMapById($id);
+    $ssu = MapModel::getSSUById($ssu_map['ssuid']);
+	$states = MapModel::getStates();
     $districts = MapModel::getDistricts($ssu['stateid'],$ssu['urbanrural']);
     $ssu_in_district = MapModel::getSSUByDistrict($ssu['regionid']);
 ?>
@@ -23,7 +24,7 @@
 	}
 </style>
 <div class="container">
-	<h3>Add SSU Map</h3>
+	<h3>Edit SSU</h3>
 		<div class="msg-box error-box alert alert-danger alert-dismissable fade in">
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 			<span class="error-msg"></span>
@@ -38,8 +39,8 @@
 		</div>
 
 	<form id="EditSSU" method="POST">
-		<input type="hidden" name="operation" value="edit_map" />
-    <input type="hidden" name="map_id" value="<?php echo $id ?>" />
+		<input type="hidden" name="operation" value="edit_ssu" />
+    	<input type="hidden" name="map_id" value="<?php echo $id ?>" />
   			<div class="form-group">
     			<label for="state">State:</label>
     			<select id="state" class="form-control" name="state">
@@ -74,7 +75,7 @@
   			<div class="form-group">
     			<label for="ssu">SSU:</label>
     			<select id="ssu" class="form-control" name="ssu">
-              <?php foreach($ssu_in_district as sd) {?>
+              <?php foreach($ssu_in_district as $sd) {?>
                 <option value="<?php echo $sd['puid']?>" <?php echo $sd['puid'] == $ssu['puid'] ? 'selected' : ''?>>
                     <?php echo $sd['name'] ?>
                 </option>
@@ -115,12 +116,16 @@ $("#EditSSU").validate({
 		});
 
 		$("#btnSubmit").click(function(){
-				if($("#AddSSU").valid()){
-					var postdata = $("#EditSSU").serialize();
+				if($("#EditSSU").valid()){
+//					var postdata = $("#EditSSU").serialize();
 					$.ajax({
 						url:'controller/MapController.php',
-						data:postdata,
+						data:new FormData($("#EditSSU")[0]),
 						method:'POST',
+						cache : false,
+						//dataType    : 'json',
+						contentType: false,
+						processData : false,
 						success:function(data){
 							var response = $.parseJSON(data);
 							if(response.status == "success"){
